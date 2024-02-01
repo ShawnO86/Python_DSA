@@ -43,7 +43,12 @@ if __name__ == '__main__':
         war_on = compare_cards(player_1.name, player_1_card, player_2.name, player_2_card, False)
 
         while war_on:
-            if (len(player_1.hand) < 4):
+            if (len(player_1.hand) < 4) and (len(player_2.hand) < 4):
+                print(f'{player_1}\n{player_2}')
+                print(f'Neither player has enough cards for war.\nGame ends in a draw.')
+                game_on = False
+                break
+            elif (len(player_1.hand) < 4):
                 print(f'{player_1}\n{player_2}')
                 print(f'{player_1.name} does not have enough cards for war.\n{player_2.name} wins!!!')
                 game_on = False
