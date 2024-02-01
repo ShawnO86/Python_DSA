@@ -26,8 +26,10 @@ class Deck:
                 self.cards.append(Card(suit, rank))
     
     def __str__(self):
+        deck_str = ''
         for card in self.cards:
-            print(f'{card.__str__()}')
+            deck_str += card.__str__() + '\n'
+        return 'Deck contains:\n' + deck_str
     
     def shuffle(self):
         shuffle(self.cards)
@@ -42,13 +44,25 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.hand = []
+        self.hand_value = 0
+        self.ace_amt = 0
         self.bank = 100
+
+    def __str__(self):
+        return f'{self.name} has {len(self.hand)} card(s) and {self.bank} chip(s).'
 
     def add_one(self, new_cards):
         if type(new_cards) == type([]):
             self.hand.extend(new_cards)
+            for card in new_cards:
+                self.hand_value += bj_values[card.rank]
+                if card.rank == 'Ace':
+                    self.ace_amt += 1
         else:
             self.hand.append(new_cards)
+            self.hand_value += bj_values[new_cards]
+            if new_cards.rank == 'Ace':
+                self.ace_amt += 1
 
     def remove_one(self):
         if len(self.hand) == 0:
@@ -60,6 +74,9 @@ class Player:
             raise ValueError(f'Not enough in bank! {self.name}\'s balance is {self.bank}.')
         self.bank -= amt
         return f'{self.name} bets {amt}. {self.name}\'s balance is {self.bank}.'
+    
+    def adjust_aces(self):
+        while self.hand_value > 21 and self.ace_amt > 0:
+            self.hand_value -= 10
+            self.ace_amt -= 1
             
-    def __str__(self):
-        return f'{self.name} has {len(self.hand)} card(s):'
