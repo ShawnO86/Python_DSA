@@ -60,7 +60,7 @@ class Player:
                     self.ace_amt += 1
         else:
             self.hand.append(new_cards)
-            self.hand_value += bj_values[new_cards]
+            self.hand_value += bj_values[new_cards.rank]
             if new_cards.rank == 'Ace':
                 self.ace_amt += 1
 
@@ -70,13 +70,15 @@ class Player:
         return self.hand.pop(0)
     
     def make_bet(self, amt):
-        if self.bank < amt:
-            raise ValueError(f'Not enough in bank! {self.name}\'s balance is {self.bank}.')
-        self.bank -= amt
-        return f'{self.name} bets {amt}. {self.name}\'s balance is {self.bank}.'
+        self.bank -= int(amt)
+        print(f'{self.name} bets {amt}. {self.name}\'s remaining balance is {self.bank}.')
+    
+    def win_bet(self, amt):
+        self.bank += amt * 2
+        print(f'Winner! {self.name}\'s new balance is {self.bank}.')
     
     def adjust_aces(self):
-        while self.hand_value > 21 and self.ace_amt > 0:
+        while self.hand_value > 21 and self.ace_amt:
             self.hand_value -= 10
             self.ace_amt -= 1
             
