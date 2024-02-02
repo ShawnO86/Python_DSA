@@ -29,12 +29,14 @@ def ask_hit_or_stand(player, dealer, deck, bet):
             display_cards(player, dealer)
             check_bust(player, dealer, bet)
         elif user_response.lower() == 's':
-            print(f'{player.name} stands. Dealer\'s turn.')
+            print(f'{player.name} stands. Start Dealer\'s turn. ****')
             while dealer.hand_value < 21 and dealer.hand_value <= player.hand_value:
                 dealer.add_one(deck.deal_one())
                 dealer.adjust_aces()
                 display_cards(player, dealer, False)
                 check_bust(player, dealer, bet)
+            print('**End dealers turn**')
+            check_winner(player.hand_value, dealer.hand_value, bet)
             game_on = False
             break
         else:
@@ -48,11 +50,11 @@ def display_cards(player, dealer, firstdeal=True):
         print('\nDealer\'s hand:')
         print(f'    |  {"First card hidden"}  |  {dealer.hand[1]}  |')
         print('-' * 50)
-        print('\nPlayer\'s hand:')
+        print(f'\n{player.name}\'s hand:')
         print('    |  ', end='')
         for card in player.hand:
             print(card, end='  |  ')
-        print(f'\nPlayer\'s hand value: {player.hand_value}')
+        print(f'\n{player.name}\'s hand value: {player.hand_value}')
         print('-' * 50)
     else:
         #asterisk used to iterate over hand list
@@ -62,21 +64,21 @@ def display_cards(player, dealer, firstdeal=True):
             print(card, end='  |  ')
         print(f'\nDealer\'s hand value: {dealer.hand_value}')
         print('-' * 50)
-        print('\nPlayer\'s hand:')
+        print(f'\n{player.name}\'s hand:')
         print('    |  ', end='')
         for card in player.hand:
             print(card, end='  |  ')
-        print(f'\nPlayer\'s hand value: {player.hand_value}')
+        print(f'\n{player.name}\'s hand value: {player.hand_value}')
         print('-' * 50)
         print('')
 
 
 def check_bust(player, dealer, bet):
-    '''Checks if a hand is over 21 then, breaks out of current round if either bust and adds bet to player bank if dealer bust'''
+    '''Checks if a hand is over 21, breaks out of current round if either bust and adds bet to player bank if dealer bust'''
 
     global game_on
     if player.hand_value > 21:
-        print('Player BUST!')
+        print(f'{player.name} BUST!')
         game_on = False
     elif dealer.hand_value > 21:
         print('Dealer BUST!')
@@ -87,28 +89,39 @@ def check_bust(player, dealer, bet):
 def check_winner(player, dealer, bet):
     '''Finds highest hand value, prints winner, adds player bet to player bank if they win'''
 
-    if player.hand_value > dealer.hand_value:
-        print('Player WINS!')
+    if player > dealer and player <= 21 and dealer < 21:
+        print(f'{player.name} WINS!')
         player.win_bet(bet)
-    elif dealer.hand_value > player.hand_value:
+    elif dealer > player and dealer <= 21 and player < 21:
         print('Dealer WINS!')
+    elif dealer == player:
+        print(f'{player.name} and Dealer tie. PUSH!')
 
 
 if __name__ == '__main__':
-    #TODO win conditions, game loop
-    
     deck = cardUtils.Deck()
     deck.shuffle()
-    player = cardUtils.Player('Player')
+    player = cardUtils.Player(input('What is your user name: '))
     dealer = cardUtils.Player('Dealer')
 
     while True:
+        start_round = input('Start a new round? (y/n): ')
+        if start_round == 'n' or start_round == 'N':
+            print(f'{player.name}\'s ending balance is {player.bank}.')
+            break
+        
+        deck = cardUtils.Deck()
+        deck.shuffle()
         game_on = True
-
+        player.hand = []
+        dealer.hand = []
+        player.hand_value = 0
+        dealer.hand_value = 0
         player_bet = take_bet(player)
 
         deal = [deck.deal_one() for _ in range(2)]
         player.add_one(deal)
+
         deal = [deck.deal_one() for _ in range(2)]
         dealer.add_one(deal)
 

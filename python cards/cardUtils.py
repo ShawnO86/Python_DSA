@@ -75,7 +75,7 @@ class Player:
     
     def win_bet(self, amt):
         self.bank += amt * 2
-        print(f'Winner! {self.name}\'s new balance is {self.bank}.')
+        print(f'Winner! {self.name}\'s new balance is {self.bank}.\n')
     
     def adjust_aces(self):
         while self.hand_value > 21 and self.ace_amt:
