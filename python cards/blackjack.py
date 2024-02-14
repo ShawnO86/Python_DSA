@@ -21,26 +21,24 @@ def ask_hit_or_stand(player, dealer, deck, bet):
     '''Asks user to hit or stand, calls display_cards() and check_bust() for each option, breaks out of current round and calls check_winner() on stand (s)'''
 
     global game_on
-    while game_on:
-        user_response = input('\nHit or Stand? (h/s): ')
-        if user_response.lower() == 'h':
-            player.add_one(deck.deal_one())
-            player.adjust_aces()
-            display_cards(player, dealer)
+    user_response = input('\nHit or Stand? (h/s): ')
+    if user_response.lower() == 'h':
+        player.add_one(deck.deal_one())
+        player.adjust_aces()
+        display_cards(player, dealer)
+        check_bust(player, dealer, bet)
+    elif user_response.lower() == 's':
+        print(f'{player.name} stands. Start Dealer\'s turn. ****')
+        while dealer.hand_value < 21 and dealer.hand_value <= player.hand_value:
+            dealer.add_one(deck.deal_one())
+            dealer.adjust_aces()
+            display_cards(player, dealer, False)
             check_bust(player, dealer, bet)
-        elif user_response.lower() == 's':
-            print(f'{player.name} stands. Start Dealer\'s turn. ****')
-            while dealer.hand_value < 21 and dealer.hand_value <= player.hand_value:
-                dealer.add_one(deck.deal_one())
-                dealer.adjust_aces()
-                display_cards(player, dealer, False)
-                check_bust(player, dealer, bet)
-            print('**End dealers turn**')
-            check_winner(player.hand_value, dealer.hand_value, bet)
-            game_on = False
-            break
-        else:
-            print('Please enter h for hit or s for stand.')
+        print('**End dealers turn**')
+        check_winner(player.hand_value, dealer.hand_value, bet)
+        game_on = False
+    else:
+        print('Please enter h for hit or s for stand.')
 
 
 def display_cards(player, dealer, firstdeal=True):
@@ -57,7 +55,6 @@ def display_cards(player, dealer, firstdeal=True):
         print(f'\n{player.name}\'s hand value: {player.hand_value}')
         print('-' * 50)
     else:
-        #asterisk used to iterate over hand list
         print('\nDealer\'s hand:')
         print('    |  ', end='')
         for card in dealer.hand:
@@ -106,7 +103,7 @@ if __name__ == '__main__':
 
     while True:
         start_round = input('Start a new round? (y/n): ')
-        if start_round == 'n' or start_round == 'N':
+        if start_round.lower() == 'n':
             print(f'{player.name}\'s ending balance is {player.bank}.')
             break
         
