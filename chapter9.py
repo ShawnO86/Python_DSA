@@ -36,6 +36,27 @@ def insertion_sort(nums):
     return nums
 
 
+#book ch.4 - bubble sort
+def bubble_sort(nums):
+    #keeps track of last unsorted index
+    unsorted_idx = len(nums) - 1
+    #keeps track of array being fully sorted
+    sorted = False
+    #loop until array is sorted
+    while not sorted:
+        #if passthrough without any swaps, array is sorted
+        sorted = True
+        #starts at idx 0 to idx that has not been sorted
+        for i in range(unsorted_idx):
+            #compare pairs of adjacent values and swap them if not in ascending order
+            if nums[i] > nums[i + 1]:
+                #if a swap happens, the array is not fully sorted
+                sorted = False
+                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+        #remove sorted value from unsorted index
+        unsorted_idx = unsorted_idx - 1
+
+
 
 
 
