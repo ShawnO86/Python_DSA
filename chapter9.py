@@ -64,46 +64,63 @@ def bubble_sort(arr):
 
 #9.8 - quck sort O(n*log(n))
 def quickSort(arr, left, right):
+    #base case: subarray has 1 or 0 elements
     if right - left <= 0:
         return
+    #obtain pivot index and partition array by last element in left part 
     pos = partition(arr, left, right)
+    #partition and sort left of pivot
     quickSort(arr, left, pos - 1)
+    #partition and sort right of pivot
     quickSort(arr, pos + 1, right)
 
 
 def partition(arr, left, right):
+    #right most index of array for pivot value
     pivot_index = right
     pivot = arr[pivot_index]
+    #start right pointer one before pivot index
     right -= 1
 
     while True:
+        #increment left pointer until the value is equal or greater than pivot value
         while arr[left] < pivot:
             left += 1
-            
+        #decrement right pointer until the value is equal or less than pivot value
         while arr[right] > pivot:
             right -= 1
-
+        #check if left pointer has passed right pointer 
         if left >= right:
+            '''When left becomes greater than or equal to right in the partition:
+            all elements to the left of the pivot are less than or equal to the pivot.
+            all elements to the right of the pivot are greater than or equal to the pivot.'''
             break
         else:
+            #swap left and right pointer values -- left is greater and right is less than pivot value due to previous while loops
             arr[left], arr[right] = arr[right], arr[left]
 
-    arr[left], arr[pivot_index] = arr[pivot_index], arr[left]
+    #left is greater than or equal to pivot value, so they get swapped, putting pivot value in the correct place at the end of left partition.
+    print('left:', arr[left], 'pivot:', arr[pivot_index])
+    print('b:', arr)
+    arr[pivot_index], arr[left] = arr[left], arr[pivot_index]
+    print('a:', arr)
 
     return left
 
 
-nums = [7, 3, 1, 2, 15, 44, 22, 33, 44, 82, 240, 354, 12, 32, 99, 1]
-start = timer()
-#selection_sort(nums)
-#insertion_sort(nums)
-#bubble_sort(nums)
-#quick_sort(nums, 0, len(nums) - 1)
-quickSort(nums, 0, len(nums) - 1)
-end = timer()
+if __name__ == '__main__':
+    nums = [0, 5, 2, 1, 6, 3]
+    print('Unsorted array:', nums)
+    start = timer()
+    #selection_sort(nums)
+    #insertion_sort(nums)
+    #bubble_sort(nums)
+    quickSort(nums, 0, len(nums) - 1)
+    end = timer()
+    time = end - start
 
-print(nums)
-print(end - start)
+    print('Sorted array:', nums)
+    print(f'Time taken: {time:.8f}ms')
 
 
 
