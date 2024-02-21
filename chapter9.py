@@ -1,45 +1,49 @@
-#9.6.1 - selection sort
-nums = [19, 42, 69, 420, 88, 99, 13, 1, 3, 2]
-def selection_sort(nums):
+from timeit import default_timer as timer
+
+
+#9.6.1 - selection sort O(n^2)
+def selection_sort(arr):
     #loops through entire list
-    for i in range(len(nums)):
+    for i in range(len(arr)):
         #initialize smallest to index i
         index_smallest = i
         #loops through remaining list after index i
-        for j in range(i + 1, len(nums)):
-            if nums[j] < nums[index_smallest]:
-                #if num is smaller than current smallest, set new smallest
+        for j in range(i + 1, len(arr)):
+            if arr[j] < arr[index_smallest]:
+                #if num is smaller than current smallest, select new smallest
                 index_smallest = j
         #save current num at index i to temp
-        temp = nums[i]
+        temp = arr[i]
         #set num at index i to smallest num
-        nums[i] = nums[index_smallest]
-        #move nums[i] to where smallest num used to be
-        nums[index_smallest] = temp
-        
-    return nums
+        arr[i] = arr[index_smallest]
+        #move arr[i] to where smallest num used to be
+        arr[index_smallest] = temp
+    return arr
 
 
-#9.7.1 - insertion sort
-def insertion_sort(nums):
-    for i in range(1, len(nums)):
-        j = i
-        # Insert numbers[i] into sorted part 
-        # stop once numbers[i] is in correct position
-        while j > 0 and nums[j] < nums[j - 1]:
-            # Swap numbers[j] and numbers[j - 1]
-            temp = nums[j]
-            nums[j] = nums[j - 1]
-            nums[j - 1] = temp
-            j = j - 1
+#9.7.1 - insertion sort - O(n^2) worst case, O(n) best case
+def insertion_sort(arr):
+    #begin outer loop at idx 1, will switch value to idx 0 if temp is lower.
+    for i in range(1, len(arr)):
+        #initialize unsorted position
+        pos = i
+        #set unsorted value to temp var
+        temp = arr[i]
+        #check if value to left of [pos] is greater than temp value and not at left end of array (idx 0)
+        while pos > 0 and arr[pos - 1] > temp:
+            #shift pos value to the left 
+            arr[pos] = arr[pos - 1]
+            #decrement position
+            pos -= 1
+        #insert temp value at [pos]
+        arr[pos] = temp
+    return arr
 
-    return nums
 
-
-#book ch.4 - bubble sort
-def bubble_sort(nums):
+#book ch.4 - bubble sort O(n^2)
+def bubble_sort(arr):
     #keeps track of last unsorted index
-    unsorted_idx = len(nums) - 1
+    unsorted_idx = len(arr) - 1
     #keeps track of array being fully sorted
     sorted = False
     #loop until array is sorted
@@ -49,13 +53,57 @@ def bubble_sort(nums):
         #starts at idx 0 to idx that has not been sorted
         for i in range(unsorted_idx):
             #compare pairs of adjacent values and swap them if not in ascending order
-            if nums[i] > nums[i + 1]:
+            if arr[i] > arr[i + 1]:
                 #if a swap happens, the array is not fully sorted
                 sorted = False
-                nums[i], nums[i + 1] = nums[i + 1], nums[i]
+                arr[i], arr[i + 1] = arr[i + 1], arr[i]
         #remove sorted value from unsorted index
         unsorted_idx = unsorted_idx - 1
+    return arr
 
+
+#9.8 - quck sort O(n*log(n))
+def quickSort(arr, left, right):
+    if right - left <= 0:
+        return
+    pos = partition(arr, left, right)
+    quickSort(arr, left, pos - 1)
+    quickSort(arr, pos + 1, right)
+
+
+def partition(arr, left, right):
+    pivot_index = right
+    pivot = arr[pivot_index]
+    right -= 1
+
+    while True:
+        while arr[left] < pivot:
+            left += 1
+            
+        while arr[right] > pivot:
+            right -= 1
+
+        if left >= right:
+            break
+        else:
+            arr[left], arr[right] = arr[right], arr[left]
+
+    arr[left], arr[pivot_index] = arr[pivot_index], arr[left]
+
+    return left
+
+
+nums = [7, 3, 1, 2, 15, 44, 22, 33, 44, 82, 240, 354, 12, 32, 99, 1]
+start = timer()
+#selection_sort(nums)
+#insertion_sort(nums)
+#bubble_sort(nums)
+#quick_sort(nums, 0, len(nums) - 1)
+quickSort(nums, 0, len(nums) - 1)
+end = timer()
+
+print(nums)
+print(end - start)
 
 
 
