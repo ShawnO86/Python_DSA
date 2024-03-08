@@ -1,8 +1,8 @@
 from timeit import default_timer as timer
 
-
 #9.6.1 - Selection sort - O(n^2)
 def selection_sort(arr):
+    print('*Selection Sort*')
     #loops through entire list
     for i in range(len(arr) - 1):
         #initialize smallest to index i
@@ -24,25 +24,48 @@ def selection_sort(arr):
 
 #9.7.1 - Insertion sort - O(n^2) worst case, O(n) best case
 def insertion_sort(arr):
-    #begin outer loop at idx 1, to be able to switch value to idx 0 if lower.
+    print('*Insertion Sort*')
+    #begin outer loop at [1] to be able to switch value to [0] if lower.
     for i in range(1, len(arr) - 1):
-        #initialize unsorted position
-        pos = i
-        #set unsorted value to temp var
-        temp = arr[i]
-        #check if value to left of [pos] is greater than temp value and not at left end of array (idx 0)
-        while pos > 0 and arr[pos - 1] > temp:
+        #initialize unsorted start position
+        j = i
+        #check if value to left of [j] is greater than [j] value and not at [0]
+        while j > 0 and arr[j - 1] > arr[j]:
             #shift pos value to the left 
-            arr[pos] = arr[pos - 1]
-            #decrement position
-            pos -= 1
-        #insert temp value at [pos]
-        arr[pos] = temp
-    return arr
+            arr[j], arr[j - 1] = arr[j - 1], arr[j]
+            #decrement j to check if values further to the left are lower
+            j -= 1
+
+
+def insertion_sort_interleaved(arr, arrSize, start, gap):
+    for i in range(start + gap, arrSize, gap):
+        j = i
+        while(j - gap >= start and arr[j - gap]) > arr[j]:
+            arr[j], arr[j - gap] = arr[j - gap], arr[j]
+            j -= gap
+
+
+def shell_sort(arr):
+    print('*Shell Sort*')
+    arrSize = len(arr)
+    gapAmt = arrSize
+    gapValues = []
+
+    while gapAmt > 5:
+        gap = gapAmt // 2 - 1
+        gapValues.append(gap)
+        gapAmt = gap
+    else:
+        gapValues.append(1)
+
+    for gap in gapValues:
+        for i in range(0, gap, 1):
+            insertion_sort_interleaved(arr, arrSize, i, gap)
 
 
 #book ch.4 - Bubble sort - O(n^2)
 def bubble_sort(arr):
+    print('*Bubble Sort*')
     #keeps track of last unsorted index
     unsorted_idx = len(arr) - 1
     #keeps track of array being fully sorted
@@ -65,6 +88,7 @@ def bubble_sort(arr):
 
 #9.8 - Quick sort - O(n*log(n))
 def quick_sort(start, end, array):
+    print('*Quick Sort*')
     #base case
     if start < end:
         #spot to divide array
@@ -115,6 +139,7 @@ def partition(start, end, array):
 
 #9.9 Merge sort - O(n*log(n))
 def merge_sort(arr, left, right):
+    print('*Merge Sort*')
     mid = 0
     if left < right:
         #midpoint of partition
@@ -175,15 +200,14 @@ def binary_search(array, target, left, right):
             return binary_search(array, target, left, mid - 1)
 
 
-
 if __name__ == '__main__':
-    nums = [18, 12, 6, 2, 4, 3, 5, 1, 7, 0, 14]
-    #print('Unsorted array:', nums)
+    nums = [0, 82, 78, 7, 38, 25, 94, 53, 94, 17, 95, 10, 39, 89, 58, 79, 99, 41, 51, 77, 49, 32, 15, 68, 17, 84, 83, 5, 58, 14, 72, 73, 64, 22, 1, 41, 76, 81, 64, 5, 73, 29, 76, 24, 100, 43, 39, 13, 92, 11, 9, 13, 76, 55, 63, 52, 22, 83, 92, 84, 44, 36, 31, 47, 53, 39, 31, 97, 30, 100, 26, 50, 67, 83, 35, 34, 72, 83, 67, 73, 64, 26, 48, 67, 51, 6, 70, 55, 63, 61, 33, 43, 8, 37, 36, 68, 16, 59, 1, 38]
     start = timer()
     #selection_sort(nums)
     #insertion_sort(nums)
     #bubble_sort(nums)
-    quick_sort(0, len(nums) - 1, nums)
+    #quick_sort(0, len(nums) - 1, nums)
+    shell_sort(nums)
     #pos = quick_select(8, 0, len(nums) - 1, nums)
     #merge_sort(nums, 0, len(nums) - 1)
     #pos = binary_search(nums, 12, 0, len(nums) - 1)
@@ -191,10 +215,4 @@ if __name__ == '__main__':
     #print(pos)
     end = timer() 
     time = end - start
-
-    #print('Sorted array:', nums)
-    print(f'Seconds taken: {time:.10f}')
-
-
-
-
+    print(f'Seconds taken: {time:.8f}')
