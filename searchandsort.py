@@ -86,9 +86,8 @@ def bubble_sort(arr):
     return arr
 
 
-#9.8 - Quick sort - O(n*log(n))
+#9.8 - Quick sort - O(n*log(n)) average - O(n^2) worst case
 def quick_sort(start, end, array):
-    print('*Quick Sort*')
     #base case
     if start < end:
         #spot to divide array
@@ -139,7 +138,6 @@ def partition(start, end, array):
 
 #9.9 Merge sort - O(n*log(n))
 def merge_sort(arr, left, right):
-    print('*Merge Sort*')
     mid = 0
     if left < right:
         #midpoint of partition
@@ -186,6 +184,63 @@ def merge(arr, left, mid, right):
         arr[left + merge_pos] = merged_nums[merge_pos]
         merge_pos += 1
 
+#12.10 Radix Sort O(n) described in book but my research states - O(k * n) n = array length and k = largest number of digits
+def radix_sort(numbers):
+    buckets = []
+    for i in range(10):
+        buckets.append([])
+    
+    # Find the max length, in number of digits
+    max_digits = radix_get_max_length(numbers)
+    
+    pow_10 = 1
+    for digit_index in range(max_digits):
+        for num in numbers:
+            bucket_index = (abs(num) // pow_10) % 10
+            buckets[bucket_index].append(num)
+
+        numbers.clear()
+        for bucket in buckets:
+            numbers.extend(bucket)
+            bucket.clear()
+      
+        pow_10 = pow_10 * 10
+    
+    negatives = []
+    non_negatives = []
+    for num in numbers:
+        if num < 0:
+            negatives.append(num)
+        else:
+            non_negatives.append(num)
+    negatives.reverse()
+    numbers.clear()
+    numbers.extend(negatives + non_negatives)
+
+
+# Returns the maximum length, in number of digits, out of all list elements 
+def radix_get_max_length(numbers):
+    max_digits = 0
+    for num in numbers:
+        digit_count = radix_get_length(num)
+        if digit_count > max_digits:
+            max_digits = digit_count
+    return max_digits
+
+
+# Returns the length, in number of digits, of value
+def radix_get_length(value):
+    if value == 0:
+        return 1
+   
+    digits = 0
+    while value != 0:
+        digits += 1
+        value = int(value / 10)
+    return digits
+
+
+
 #9.14.1 LAB: Binary Search - O(log(n))
 def binary_search(array, target, left, right):
     mid = left + (right - left) // 2
@@ -202,17 +257,26 @@ def binary_search(array, target, left, right):
 
 if __name__ == '__main__':
     nums = [0, 82, 78, 7, 38, 25, 94, 53, 94, 17, 95, 10, 39, 89, 58, 79, 99, 41, 51, 77, 49, 32, 15, 68, 17, 84, 83, 5, 58, 14, 72, 73, 64, 22, 1, 41, 76, 81, 64, 5, 73, 29, 76, 24, 100, 43, 39, 13, 92, 11, 9, 13, 76, 55, 63, 52, 22, 83, 92, 84, 44, 36, 31, 47, 53, 39, 31, 97, 30, 100, 26, 50, 67, 83, 35, 34, 72, 83, 67, 73, 64, 26, 48, 67, 51, 6, 70, 55, 63, 61, 33, 43, 8, 37, 36, 68, 16, 59, 1, 38]
+    #nums = [77, 53, 56, 33, 87, 23, 58, 30, 75, 76] 
+    # Print unsorted list
+    print('UNSORTED:', nums)
     start = timer()
     #selection_sort(nums)
     #insertion_sort(nums)
     #bubble_sort(nums)
     #quick_sort(0, len(nums) - 1, nums)
-    shell_sort(nums)
+    #shell_sort(nums)
     #pos = quick_select(8, 0, len(nums) - 1, nums)
     #merge_sort(nums, 0, len(nums) - 1)
+    #radix_sort(nums)
     #pos = binary_search(nums, 12, 0, len(nums) - 1)
-    print(nums)
+    # Print sorted list
+    print('SORTED:', nums)
     #print(pos)
     end = timer() 
     time = end - start
     print(f'Seconds taken: {time:.8f}')
+
+    print(len(nums))
+
+
