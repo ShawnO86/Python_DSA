@@ -243,6 +243,10 @@ def radix_get_length(value):
 
 #9.14.1 LAB: Binary Search - O(log(n))
 def binary_search(array, target, left, right):
+    '''Recursive binary search --- selects the middle value of a sorted array, checks if that value is the target and returns the index at that value if it is,
+    if left pointer is in same place as right pointer target value not found,
+    if value at mid is less than target, target is higher, so search right side -- call binary_search with (mid + 1 to right end),
+    if value at mid is greater, search left side -- call binary_search with (left end to mid - 1).'''
     mid = left + (right - left) // 2
     if target == array[mid]:
         return mid
